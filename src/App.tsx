@@ -14,6 +14,9 @@ import AdminCategories from "./pages/AdminCategories";
 import AdminOrders from "./pages/AdminOrders";
 import AdminSettings from "./pages/AdminSettings";
 import AdminMarketing from "./pages/AdminMarketing";
+import SuperAdminLogin from "./pages/SuperAdminLogin";
+import SuperAdminLayout from "./pages/SuperAdminLayout";
+import SuperAdminLojas from "./pages/SuperAdminLojas";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -56,6 +59,18 @@ const App = () => (
                 <Route path="pedidos" element={<AdminOrders />} />
                 <Route path="marketing" element={<AdminMarketing />} />
                 <Route path="configuracoes" element={<AdminSettings />} />
+              </Route>
+              <Route path="/super-admin/login" element={<SuperAdminLogin />} />
+              <Route
+                path="/super-admin"
+                element={
+                  <ProtectedRoute>
+                    <SuperAdminLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<Navigate to="/super-admin/lojas" replace />} />
+                <Route path="lojas" element={<SuperAdminLojas />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
