@@ -10,8 +10,8 @@ export function useCategories() {
         .from("categorias")
         .select("*")
         .order("nome");
-      if (error) throw error;
-      return data;
+      if (error) return [];
+      return data || [];
     },
   });
 }
@@ -52,8 +52,8 @@ export function useProducts() {
         .from("produtos")
         .select("*, categorias(nome)")
         .order("nome");
-      if (error) throw error;
-      return data;
+      if (error) return [];
+      return data || [];
     },
   });
 }
@@ -141,7 +141,7 @@ export function useSettings() {
         .select("*")
         .limit(1)
         .single();
-      if (error) throw error;
+      if (error) return null;
       return data;
     },
   });
