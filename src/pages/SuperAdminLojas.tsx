@@ -43,14 +43,27 @@ export default function SuperAdminLojas() {
     }
     try {
       await saveLoja.mutateAsync({
-        id: editingId || undefined, nome_loja: form.nome_loja, nome_admin: form.nome_admin,
-        email_admin: form.email_admin, senha_admin: form.senha_admin || undefined,
-        telefone_whatsapp: form.telefone_whatsapp || undefined, endereco: form.endereco || undefined, ativa: form.ativa,
+        id: editingId || undefined, 
+        nome_loja: form.nome_loja, 
+        nome_admin: form.nome_admin,
+        email_admin: form.email_admin, 
+        senha_admin: form.senha_admin || undefined,
+        telefone_whatsapp: form.telefone_whatsapp || undefined, 
+        endereco: form.endereco || undefined, 
+        ativa: form.ativa,
       });
       toast.success(editingId ? "Loja atualizada!" : "Loja criada!");
       resetForm();
     } catch (error: any) {
-      toast.error(`Erro: ${error?.message || 'Erro desconhecido'}`);
+      console.error('Erro ao salvar loja:', error);
+      const msg = error?.message || 'Erro desconhecido';
+      if (msg.includes('duplicate') || msg.includes('already exists')) {
+        toast.error('Este email já está cadastrado!');
+      } else if (msg.includes('Lock')) {
+        toast.error('Erro de conexão. Tente novamente.');
+      } else {
+        toast.error(`Erro: ${msg}`);
+      }
     }
   };
 
