@@ -189,7 +189,7 @@ export function useSettingsByLojaId(lojaId: string | undefined) {
   });
 }
 
-// Dados da loja
+// Dados da loja por ID
 export function useLojaById(lojaId: string | undefined) {
   return useQuery({
     queryKey: ["loja", lojaId],
@@ -204,6 +204,24 @@ export function useLojaById(lojaId: string | undefined) {
       return data;
     },
     enabled: !!lojaId,
+  });
+}
+
+// Dados da loja por slug
+export function useLojaBySlug(slug: string | undefined) {
+  return useQuery({
+    queryKey: ["loja", slug],
+    queryFn: async () => {
+      if (!slug) return null;
+      const { data, error } = await supabase
+        .from("lojas")
+        .select("*")
+        .eq("slug", slug)
+        .single();
+      if (error) return null;
+      return data;
+    },
+    enabled: !!slug,
   });
 }
 

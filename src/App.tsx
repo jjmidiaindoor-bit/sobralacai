@@ -44,7 +44,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/loja/:lojaId" element={<LojaCardapio />} />
+              <Route path="/loja/:slug" element={<LojaCardapio />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route

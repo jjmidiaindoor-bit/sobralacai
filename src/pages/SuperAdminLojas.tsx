@@ -17,11 +17,11 @@ export default function SuperAdminLojas() {
   const [passwordForm, setPasswordForm] = useState({ novaSenha: "", confirmarSenha: "" });
   const [form, setForm] = useState({
     nome_loja: "", nome_admin: "", email_admin: "", senha_admin: "",
-    telefone_whatsapp: "", endereco: "", ativa: true,
+    telefone_whatsapp: "", endereco: "", slug: "", ativa: true,
   });
 
   const resetForm = () => {
-    setForm({ nome_loja: "", nome_admin: "", email_admin: "", senha_admin: "", telefone_whatsapp: "", endereco: "", ativa: true });
+    setForm({ nome_loja: "", nome_admin: "", email_admin: "", senha_admin: "", telefone_whatsapp: "", endereco: "", slug: "", ativa: true });
     setEditingId(null);
     setShowForm(false);
   };
@@ -29,7 +29,8 @@ export default function SuperAdminLojas() {
   const handleEdit = (loja: any) => {
     setForm({
       nome_loja: loja.nome_loja, nome_admin: loja.nome_admin, email_admin: loja.email_admin,
-      senha_admin: "", telefone_whatsapp: loja.telefone_whatsapp || "", endereco: loja.endereco || "", ativa: loja.ativa,
+      senha_admin: "", telefone_whatsapp: loja.telefone_whatsapp || "", endereco: loja.endereco || "",
+      slug: loja.slug || "", ativa: loja.ativa,
     });
     setEditingId(loja.id);
     setShowForm(true);
@@ -43,13 +44,14 @@ export default function SuperAdminLojas() {
     }
     try {
       await saveLoja.mutateAsync({
-        id: editingId || undefined, 
-        nome_loja: form.nome_loja, 
+        id: editingId || undefined,
+        nome_loja: form.nome_loja,
         nome_admin: form.nome_admin,
-        email_admin: form.email_admin, 
+        email_admin: form.email_admin,
         senha_admin: form.senha_admin || undefined,
-        telefone_whatsapp: form.telefone_whatsapp || undefined, 
-        endereco: form.endereco || undefined, 
+        telefone_whatsapp: form.telefone_whatsapp || undefined,
+        endereco: form.endereco || undefined,
+        slug: form.slug || undefined,
         ativa: form.ativa,
       });
       toast.success(editingId ? "Loja atualizada!" : "Loja criada!");
@@ -196,7 +198,7 @@ export default function SuperAdminLojas() {
                 <td className="p-3 text-right">
                   <div className="flex justify-end gap-2">
                     <a
-                      href={`/loja/${loja.id}`}
+                      href={`/loja/${loja.slug || loja.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1 hover:text-accent"

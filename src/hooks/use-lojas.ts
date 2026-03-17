@@ -20,9 +20,9 @@ export function useLojas() {
 export function useSaveLoja() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, nome_loja, nome_admin, email_admin, senha_admin, telefone_whatsapp, endereco, ativa }: any) => {
+    mutationFn: async ({ id, nome_loja, nome_admin, email_admin, senha_admin, telefone_whatsapp, endereco, slug, ativa }: any) => {
       console.log('[useSaveLoja] Salvando loja:', { id, email_admin });
-      
+
       if (id) {
         // Update
         const payload: any = {
@@ -31,26 +31,27 @@ export function useSaveLoja() {
           email_admin,
           telefone_whatsapp,
           endereco,
+          slug,
           ativa,
           updated_at: new Date().toISOString()
         };
-        
+
         if (senha_admin && senha_admin.trim() !== '') {
           payload.senha_admin = senha_admin;
         }
-        
+
         const { data, error } = await supabase
           .from('lojas')
           .update(payload)
           .eq('id', id)
           .select()
           .single();
-          
+
         if (error) {
           console.error('[useSaveLoja] Erro no update:', error);
           throw new Error(error.message);
         }
-        
+
         return data;
       } else {
         // Insert
@@ -63,16 +64,17 @@ export function useSaveLoja() {
             senha_admin,
             telefone_whatsapp,
             endereco,
+            slug,
             ativa
           })
           .select()
           .single();
-          
+
         if (error) {
           console.error('[useSaveLoja] Erro no insert:', error);
           throw new Error(error.message);
         }
-        
+
         return data;
       }
     },

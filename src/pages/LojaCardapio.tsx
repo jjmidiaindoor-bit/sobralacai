@@ -4,16 +4,20 @@ import { CustomerHeader } from "@/components/CustomerHeader";
 import { CartDrawer } from "@/components/CartDrawer";
 import { ProductCard } from "@/components/ProductCard";
 import { CategoryNav } from "@/components/CategoryNav";
-import { useProductsByLojaId, useCategoriesByLojaId, useSettingsByLojaId } from "@/hooks/use-supabase";
+import { useProductsByLojaId, useCategoriesByLojaId, useSettingsByLojaId, useLojaBySlug } from "@/hooks/use-supabase";
 import { useCart } from "@/contexts/CartContext";
 import heroImg from "@/assets/acai-hero.jpg";
 
 const LojaCardapio = () => {
-  const { lojaId } = useParams<{ lojaId: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const { setLojaContext } = useCart();
   const [cartOpen, setCartOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
+  
+  // Busca dados da loja pelo slug
+  const { data: lojaData } = useLojaBySlug(slug);
+  const lojaId = lojaData?.id;
   
   const { data: products, isLoading: loadingProducts } = useProductsByLojaId(lojaId);
   const { data: categories, isLoading: loadingCategories } = useCategoriesByLojaId(lojaId);
@@ -39,10 +43,12 @@ const LojaCardapio = () => {
     products: (products || []).filter((p) => p.categoria_id === cat.id),
   }));
 
-  if (!lojaId) {
+  if (!slug || !lojaData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="font-heading text-sm uppercase text-muted-foreground">LOJA NÃO ENCONTRADA</p>
+        <p className="font-heading text-sm uppercase text-muted-foreground">
+          {lojaData === null ? "LOJA NÃO ENCONTRADA" : "CARREGANDO..."}
+        </p>
       </div>
     );
   }
