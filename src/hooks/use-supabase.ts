@@ -1,15 +1,13 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-const SCHEMA = import.meta.env.VITE_SUPABASE_SCHEMA || 'sobralacai';
-
 // Categories
 export function useCategories() {
   return useQuery({
     queryKey: ["categorias"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from(`${SCHEMA}.categorias`)
+        .from("categorias")
         .select("*")
         .order("nome");
       if (error) return [];
@@ -22,12 +20,12 @@ export function useSaveCategory() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, nome }: { id?: string; nome: string }) => {
-      const payload = { nome, loja_id: null };
+      const payload = { nome };
       if (id) {
-        const { error } = await supabase.from(`${SCHEMA}.categorias`).update(payload).eq("id", id);
+        const { error } = await supabase.from("categorias").update(payload).eq("id", id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from(`${SCHEMA}.categorias`).insert(payload);
+        const { error } = await supabase.from("categorias").insert(payload);
         if (error) throw error;
       }
     },
@@ -39,7 +37,7 @@ export function useDeleteCategory() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from(`${SCHEMA}.categorias`).delete().eq("id", id);
+      const { error } = await supabase.from("categorias").delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["categorias"] }),
@@ -52,7 +50,7 @@ export function useProducts() {
     queryKey: ["produtos"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from(`${SCHEMA}.produtos`)
+        .from("produtos")
         .select("*, categorias(nome)")
         .order("nome");
       if (error) return [];
@@ -79,12 +77,12 @@ export function useSaveProduct() {
       foto_url?: string;
       categoria_id?: string;
     }) => {
-      const payload = { nome, descricao, preco, foto_url, categoria_id, loja_id: null };
+      const payload = { nome, descricao, preco, foto_url, categoria_id };
       if (id) {
-        const { error } = await supabase.from(`${SCHEMA}.produtos`).update(payload).eq("id", id);
+        const { error } = await supabase.from("produtos").update(payload).eq("id", id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from(`${SCHEMA}.produtos`).insert(payload);
+        const { error } = await supabase.from("produtos").insert(payload);
         if (error) throw error;
       }
     },
@@ -96,7 +94,7 @@ export function useDeleteProduct() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from(`${SCHEMA}.produtos`).delete().eq("id", id);
+      const { error } = await supabase.from("produtos").delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["produtos"] }),
@@ -109,7 +107,7 @@ export function useOrders() {
     queryKey: ["pedidos"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from(`${SCHEMA}.pedidos`)
+        .from("pedidos")
         .select("*")
         .order("created_at", { ascending: false });
       if (error) return [];
@@ -128,7 +126,7 @@ export function useCreateOrder() {
       detalhes_pedido: string;
       total: number;
     }) => {
-      const { error } = await supabase.from(`${SCHEMA}.pedidos`).insert(order);
+      const { error } = await supabase.from("pedidos").insert(order);
       if (error) throw error;
     },
   });
@@ -140,7 +138,7 @@ export function useSettings() {
     queryKey: ["configuracoes"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from(`${SCHEMA}.configuracoes`)
+        .from("configuracoes")
         .select("*")
         .limit(1)
         .single();
@@ -165,7 +163,7 @@ export function useUpdateSettings() {
       banner_url?: string;
       slogan?: string;
     }) => {
-      const { error } = await supabase.from(`${SCHEMA}.configuracoes`).update(values).eq("id", id);
+      const { error } = await supabase.from("configuracoes").update(values).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["configuracoes"] }),
