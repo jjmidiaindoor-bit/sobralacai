@@ -1,73 +1,110 @@
-# Welcome to your Lovable project
+# 🍇 AÇAÍ EXPRESS - SISTEMA MULTI-LOJAS
 
-## Project info
+Sistema de delivery de açaí com suporte para múltiplas lojas.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+---
 
-## How can I edit this code?
+## 🚀 URLs
 
-There are several ways of editing your application.
+| Página | URL |
+|--------|-----|
+| **Site** | https://sobralacai.vercel.app |
+| **Admin** | https://sobralacai.vercel.app/admin/login |
+| **Super Admin** | https://sobralacai.vercel.app/super-admin/login |
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## 🔐 Credenciais
 
-Changes made via Lovable will be committed automatically to this repo.
+### Super Admin
+- **Email:** `super@acaiaqui.com`
+- **Senha:** `super123`
 
-**Use your preferred IDE**
+### Admin Loja (exemplo)
+- **Email:** `admin@acaiaqui.com`
+- **Senha:** `admin123`
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 📋 CONFIGURAÇÃO INICIAL
 
-Follow these steps:
+### 1. Variáveis de Ambiente na Vercel
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Acesse: https://vercel.com/jjmidiaindoors-projects/sobralacai/settings/environment-variables
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Adicione:
+- `VITE_SUPABASE_URL` → URL do seu projeto Supabase
+- `VITE_SUPABASE_PUBLISHABLE_KEY` → Chave anon do Supabase
 
-# Step 3: Install the necessary dependencies.
-npm i
+### 2. Banco de Dados (Supabase)
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+1. Acesse: https://app.supabase.com
+2. Entre no seu projeto
+3. Vá em **SQL Editor** → **New Query**
+4. Copie e cole o arquivo `SCRIPT_COMPLETO.sql`
+5. Clique em **Run**
+
+---
+
+## 🏪 COMO FUNCIONA
+
+### Super Admin
+- Cria, edita e exclui lojas
+- Cada loja tem seu próprio admin
+- Acesso: `/super-admin/login`
+
+### Admin da Loja
+- Gerencia produtos, categorias e pedidos
+- Vê apenas dados da sua loja (isolamento total)
+- Acesso: `/admin/login`
+
+---
+
+## 🛠️ Tecnologias
+
+- **Frontend:** React + Vite + TypeScript
+- **UI:** shadcn/ui + Tailwind CSS
+- **Backend:** Supabase (PostgreSQL + Auth + Storage)
+- **Deploy:** Vercel
+
+---
+
+## 📁 Estrutura
+
+```
+├── src/
+│   ├── components/     # Componentes UI
+│   ├── contexts/       # Contextos React
+│   ├── hooks/          # Hooks personalizados
+│   ├── pages/          # Páginas do sistema
+│   └── integrations/   # Integração Supabase
+├── public/             # Arquivos estáticos
+├── SCRIPT_COMPLETO.sql # Script do banco de dados
+└── vercel.json         # Configuração Vercel
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📝 Comandos
 
-**Use GitHub Codespaces**
+```bash
+npm run dev      # Desenvolvimento
+npm run build    # Build produção
+npm run preview  # Preview local
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## 🎯 Funcionalidades
 
-This project is built with:
+- ✅ Multi-lojas com isolamento de dados
+- ✅ Painel administrativo por loja
+- ✅ Gestão de produtos e categorias
+- ✅ Pedidos em tempo real
+- ✅ Configurações personalizadas por loja
+- ✅ Upload de fotos de produtos
+- ✅ Responsivo (mobile-first)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+**Criado com ❤️ para Açaí Express**
