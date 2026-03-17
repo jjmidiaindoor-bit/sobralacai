@@ -69,7 +69,20 @@ export default function SuperAdminLojas() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Tem certeza que deseja excluir esta loja?")) return;
-    try { await deleteLoja.mutateAsync(id); toast.success("Loja excluída!"); } catch { toast.error("Erro ao excluir."); }
+    try { 
+      await deleteLoja.mutateAsync(id); 
+      toast.success("Loja excluída!"); 
+    } catch (error: any) { 
+      console.error('Erro ao excluir loja:', error);
+      const msg = error?.message || 'Erro desconhecido';
+      if (msg.includes('foreign key')) {
+        toast.error('A loja possui dados vinculados. Contate o suporte.');
+      } else if (msg.includes('permission')) {
+        toast.error('Sem permissão para excluir esta loja.');
+      } else {
+        toast.error(`Erro ao excluir: ${msg}`);
+      }
+    }
   };
 
   const handleToggleAtiva = async (id: string, ativa: boolean) => {
