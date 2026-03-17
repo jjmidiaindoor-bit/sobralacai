@@ -49,7 +49,11 @@ const LojaCardapio = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <CustomerHeader onCartOpen={() => setCartOpen(true)} />
+      <CustomerHeader 
+        onCartOpen={() => setCartOpen(true)} 
+        lojaNome={settings?.nome_loja}
+        logoUrl={settings?.logo_url}
+      />
 
       {/* Hero */}
       <section className="relative h-64 md:h-80 overflow-hidden bg-primary">

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { ShoppingCart, Menu, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
@@ -6,25 +5,30 @@ import { useSettings } from "@/hooks/use-supabase";
 
 interface CustomerHeaderProps {
   onCartOpen: () => void;
+  lojaNome?: string;
+  logoUrl?: string;
 }
 
-export function CustomerHeader({ onCartOpen }: CustomerHeaderProps) {
+export function CustomerHeader({ onCartOpen, lojaNome, logoUrl }: CustomerHeaderProps) {
   const { itemCount, justAdded } = useCart();
   const { data: settings } = useSettings();
+
+  const nomeExibicao = lojaNome || settings?.nome_loja || "AÇAÍ EXPRESS";
+  const logoExibicao = logoUrl || settings?.logo_url;
 
   return (
     <header className="sticky top-0 z-50 bg-primary text-primary-foreground">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-3">
-          {settings?.logo_url && (
-            <img 
-              src={settings.logo_url} 
-              alt={settings.nome_loja || "Logo"} 
+          {logoExibicao && (
+            <img
+              src={logoExibicao}
+              alt={nomeExibicao || "Logo"}
               className="h-10 w-10 object-contain"
             />
           )}
           <h1 className="font-heading text-xl uppercase tracking-wider">
-            {settings?.nome_loja || "AÇAÍ EXPRESS"}
+            {nomeExibicao}
           </h1>
         </div>
         <button
