@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLojas, useSaveLoja, useDeleteLoja, useAtivarDesativarLoja, useChangeLojaPassword } from "@/hooks/use-lojas";
-import { Plus, Pencil, Trash2, X, Power, CheckCircle2, XCircle, Key } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Power, CheckCircle2, XCircle, Key, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 
 export default function SuperAdminLojas() {
@@ -195,6 +195,15 @@ export default function SuperAdminLojas() {
                 <td className="p-3 hidden lg:table-cell"><p className="text-sm text-muted-foreground">{new Date(loja.created_at).toLocaleDateString('pt-BR')}</p></td>
                 <td className="p-3 text-right">
                   <div className="flex justify-end gap-2">
+                    <a
+                      href={`/loja/${loja.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1 hover:text-accent"
+                      title="Ver Cardápio"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
                     <button onClick={() => handleOpenPasswordModal(loja)} className="p-1 hover:text-accent" title="Alterar Senha"><Key className="h-4 w-4" /></button>
                     <button onClick={() => handleToggleAtiva(loja.id, loja.ativa)} className="p-1 hover:text-accent" title={loja.ativa ? "Desativar" : "Ativar"}><Power className="h-4 w-4" /></button>
                     <button onClick={() => handleEdit(loja)} className="p-1 hover:text-accent" title="Editar"><Pencil className="h-4 w-4" /></button>

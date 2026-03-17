@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { CartItem, Product } from "@/lib/types";
 
 interface CartContextType {
@@ -10,13 +10,54 @@ interface CartContextType {
   total: number;
   itemCount: number;
   justAdded: string | null;
+  currentLojaId: string | null;
+  setLojaContext: (lojaId: string) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+const CART_STORAGE_KEY = "acai-cart";
+const LOJA_STORAGE_KEY = "acai-loja-id";
+
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [currentLojaId, setCurrentLojaId] = useState<string | null>(() => {
+    return localStorage.getItem(LOJA_STORAGE_KEY);
+  });
+  
+  const [items, setItems] = useState<CartItem[]>(() => {
+    const saved = localStorage.getItem(CART_STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Só restaura se for da mesma loja
+        if (parsed.lojaId === currentLojaId) {
+          return parsed.items || [];
+        }
+      } catch {}
+    }
+    return [];
+  });
+  
   const [justAdded, setJustAdded] = useState<string | null>(null);
+
+  // Salvar carrinho no localStorage sempre que mudar
+  useEffect(() => {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify({
+      lojaId: currentLojaId,
+      items
+    }));
+  }, [items, currentLojaId]);
+
+  const setLojaContext = useCallback((lojaId: string) => {
+    const prevLojaId = currentLojaId;
+    setCurrentLojaId(lojaId);
+    localStorage.setItem(LOJA_STORAGE_KEY, lojaId);
+    
+    // Limpa o carrinho se mudou de loja
+    if (prevLojaId && prevLojaId !== lojaId) {
+      setItems([]);
+    }
+  }, [currentLojaId]);
 
   const addItem = useCallback((product: Product) => {
     setItems((prev) => {
@@ -55,7 +96,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ items, addItem, removeItem, updateQuantity, clearCart, total, itemCount, justAdded }}
+      value={{ items, addItem, removeItem, updateQuantity, clearCart, total, itemCount, justAdded, currentLojaId, setLojaContext }}
     >
       {children}
     </CartContext.Provider>

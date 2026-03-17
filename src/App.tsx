@@ -17,6 +17,7 @@ import AdminMarketing from "./pages/AdminMarketing";
 import SuperAdminLogin from "./pages/SuperAdminLogin";
 import SuperAdminLayout from "./pages/SuperAdminLayout";
 import SuperAdminLojas from "./pages/SuperAdminLojas";
+import LojaCardapio from "./pages/LojaCardapio";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/loja/:lojaId" element={<LojaCardapio />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route

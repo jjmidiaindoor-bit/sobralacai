@@ -170,6 +170,79 @@ export function useSettings() {
   });
 }
 
+// Settings para loja específica (pública)
+export function useSettingsByLojaId(lojaId: string | undefined) {
+  return useQuery({
+    queryKey: ["configuracoes", lojaId],
+    queryFn: async () => {
+      if (!lojaId) return null;
+      const { data, error } = await supabase
+        .from("configuracoes")
+        .select("*")
+        .eq("loja_id", lojaId)
+        .limit(1)
+        .single();
+      if (error) return null;
+      return data;
+    },
+    enabled: !!lojaId,
+  });
+}
+
+// Dados da loja
+export function useLojaById(lojaId: string | undefined) {
+  return useQuery({
+    queryKey: ["loja", lojaId],
+    queryFn: async () => {
+      if (!lojaId) return null;
+      const { data, error } = await supabase
+        .from("lojas")
+        .select("*")
+        .eq("id", lojaId)
+        .single();
+      if (error) return null;
+      return data;
+    },
+    enabled: !!lojaId,
+  });
+}
+
+// Produtos de uma loja específica
+export function useProductsByLojaId(lojaId: string | undefined) {
+  return useQuery({
+    queryKey: ["produtos", lojaId],
+    queryFn: async () => {
+      if (!lojaId) return [];
+      const { data, error } = await supabase
+        .from("produtos")
+        .select("*, categorias(nome)")
+        .eq("loja_id", lojaId)
+        .order("nome");
+      if (error) return [];
+      return data || [];
+    },
+    enabled: !!lojaId,
+  });
+}
+
+// Categorias de uma loja específica
+export function useCategoriesByLojaId(lojaId: string | undefined) {
+  return useQuery({
+    queryKey: ["categorias", lojaId],
+    queryFn: async () => {
+      if (!lojaId) return [];
+      const { data, error } = await supabase
+        .from("categorias")
+        .select("*")
+        .eq("loja_id", lojaId)
+        .order("nome");
+      if (error) return [];
+      return data || [];
+    },
+    enabled: !!lojaId,
+  });
+}
+
 export function useUpdateSettings() {
   const qc = useQueryClient();
   return useMutation({
