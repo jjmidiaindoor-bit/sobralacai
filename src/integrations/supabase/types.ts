@@ -20,20 +20,31 @@ export type Database = {
           id: string
           nome: string
           updated_at: string
+          loja_id: string
         }
         Insert: {
           created_at?: string
           id?: string
           nome: string
           updated_at?: string
+          loja_id: string
         }
         Update: {
           created_at?: string
           id?: string
           nome?: string
           updated_at?: string
+          loja_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "categorias_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       configuracoes: {
         Row: {
@@ -43,6 +54,7 @@ export type Database = {
           nome_loja: string
           telefone_whatsapp: string
           updated_at: string
+          loja_id: string
         }
         Insert: {
           endereco?: string | null
@@ -51,6 +63,7 @@ export type Database = {
           nome_loja?: string
           telefone_whatsapp?: string
           updated_at?: string
+          loja_id: string
         }
         Update: {
           endereco?: string | null
@@ -59,8 +72,17 @@ export type Database = {
           nome_loja?: string
           telefone_whatsapp?: string
           updated_at?: string
+          loja_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "configuracoes_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       lojas: {
         Row: {
@@ -107,6 +129,7 @@ export type Database = {
           detalhes_pedido: string
           endereco: string | null
           id: string
+          loja_id: string
           nome_cliente: string
           observacao: string | null
           telefone: string
@@ -117,6 +140,7 @@ export type Database = {
           detalhes_pedido: string
           endereco?: string | null
           id?: string
+          loja_id?: string
           nome_cliente: string
           observacao?: string | null
           telefone: string
@@ -127,12 +151,21 @@ export type Database = {
           detalhes_pedido?: string
           endereco?: string | null
           id?: string
+          loja_id?: string
           nome_cliente?: string
           observacao?: string | null
           telefone?: string
           total?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "pedidos_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       produtos: {
         Row: {
@@ -141,6 +174,7 @@ export type Database = {
           descricao: string | null
           foto_url: string | null
           id: string
+          loja_id: string
           nome: string
           preco: number
           updated_at: string
@@ -151,6 +185,7 @@ export type Database = {
           descricao?: string | null
           foto_url?: string | null
           id?: string
+          loja_id?: string
           nome: string
           preco?: number
           updated_at?: string
@@ -161,6 +196,7 @@ export type Database = {
           descricao?: string | null
           foto_url?: string | null
           id?: string
+          loja_id?: string
           nome?: string
           preco?: number
           updated_at?: string
@@ -173,6 +209,13 @@ export type Database = {
             referencedRelation: "categorias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "produtos_loja_id_fkey"
+            columns: ["loja_id"]
+            isOneToOne: false
+            referencedRelation: "lojas"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
@@ -180,7 +223,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      set_loja_email: {
+        Args: {
+          loja_email: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

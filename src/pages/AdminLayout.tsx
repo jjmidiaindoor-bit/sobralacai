@@ -4,6 +4,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useSettings } from "@/hooks/use-supabase";
+import { supabase } from "@/integrations/supabase/client";
 
 const NAV_ITEMS = [
   { label: "DASHBOARD", path: "/admin", icon: LayoutDashboard },
@@ -27,7 +28,11 @@ export default function AdminLayout() {
       navigate("/admin/login");
       return;
     }
-    setLoja(JSON.parse(lojaData));
+    const loja = JSON.parse(lojaData);
+    setLoja(loja);
+    
+    // Configurar o email da loja no Supabase para RLS
+    supabase.rpc('set_loja_email', { loja_email: loja.email_admin });
   }, [navigate]);
 
   const handleLogout = async () => {

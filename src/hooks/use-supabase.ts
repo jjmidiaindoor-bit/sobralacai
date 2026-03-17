@@ -1,14 +1,26 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
+// Função auxiliar para obter o loja_id do localStorage
+function getLojaId(): string | null {
+  const lojaData = localStorage.getItem("admin_loja");
+  if (lojaData) {
+    const loja = JSON.parse(lojaData);
+    return loja.id;
+  }
+  return null;
+}
+
 // Categories
 export function useCategories() {
   return useQuery({
     queryKey: ["categorias"],
     queryFn: async () => {
+      const lojaId = getLojaId();
       const { data, error } = await supabase
         .from("categorias")
         .select("*")
+        .eq("loja_id", lojaId!)
         .order("nome");
       if (error) return [];
       return data || [];
@@ -20,7 +32,8 @@ export function useSaveCategory() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, nome }: { id?: string; nome: string }) => {
-      const payload = { nome };
+      const lojaId = getLojaId();
+      const payload = { nome, loja_id: lojaId };
       if (id) {
         const { error } = await supabase.from("categorias").update(payload).eq("id", id);
         if (error) throw error;
@@ -49,9 +62,11 @@ export function useProducts() {
   return useQuery({
     queryKey: ["produtos"],
     queryFn: async () => {
+      const lojaId = getLojaId();
       const { data, error } = await supabase
         .from("produtos")
         .select("*, categorias(nome)")
+        .eq("loja_id", lojaId!)
         .order("nome");
       if (error) return [];
       return data || [];
@@ -77,7 +92,8 @@ export function useSaveProduct() {
       foto_url?: string;
       categoria_id?: string;
     }) => {
-      const payload = { nome, descricao, preco, foto_url, categoria_id };
+      const lojaId = getLojaId();
+      const payload = { nome, descricao, preco, foto_url, categoria_id, loja_id: lojaId };
       if (id) {
         const { error } = await supabase.from("produtos").update(payload).eq("id", id);
         if (error) throw error;
@@ -106,9 +122,11 @@ export function useOrders() {
   return useQuery({
     queryKey: ["pedidos"],
     queryFn: async () => {
+      const lojaId = getLojaId();
       const { data, error } = await supabase
         .from("pedidos")
         .select("*")
+        .eq("loja_id", lojaId!)
         .order("created_at", { ascending: false });
       if (error) return [];
       return data || [];
@@ -126,7 +144,9 @@ export function useCreateOrder() {
       detalhes_pedido: string;
       total: number;
     }) => {
-      const { error } = await supabase.from("pedidos").insert(order);
+      const lojaId = getLojaId();
+      const orderWithLoja = { ...order, loja_id: lojaId };
+      const { error } = await supabase.from("pedidos").insert(orderWithLoja);
       if (error) throw error;
     },
   });
@@ -137,9 +157,11 @@ export function useSettings() {
   return useQuery({
     queryKey: ["configuracoes"],
     queryFn: async () => {
+      const lojaId = getLojaId();
       const { data, error } = await supabase
         .from("configuracoes")
         .select("*")
+        .eq("loja_id", lojaId!)
         .limit(1)
         .single();
       if (error) return null;
@@ -163,7 +185,8 @@ export function useUpdateSettings() {
       banner_url?: string;
       slogan?: string;
     }) => {
-      const { error } = await supabase.from("configuracoes").update(values).eq("id", id);
+      const lojaId = getLojaId();
+      const { error } = await supabase.from("configuracoes").update({ ...values, loja_id: lojaId }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["configuracoes"] }),

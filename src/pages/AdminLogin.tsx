@@ -33,12 +33,16 @@ export default function AdminLogin() {
       }
 
       // Armazenar dados da loja no localStorage
-      localStorage.setItem("admin_loja", JSON.stringify({
+      const lojaData = {
         id: loja.id,
         nome_loja: loja.nome_loja,
         email_admin: loja.email_admin,
         nome_admin: loja.nome_admin
-      }));
+      };
+      localStorage.setItem("admin_loja", JSON.stringify(lojaData));
+
+      // Configurar o email da loja no Supabase para RLS
+      supabase.rpc('set_loja_email', { loja_email: loja.email_admin });
 
       toast.success("Login realizado!");
       navigate("/admin");
