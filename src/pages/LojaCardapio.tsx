@@ -15,9 +15,12 @@ const LojaCardapio = () => {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   
-  // Busca dados da loja pelo slug
-  const { data: lojaData } = useLojaBySlug(slug);
-  const lojaId = lojaData?.id;
+  // Tenta buscar por slug primeiro (URL amigável)
+  const { data: lojaData, error: slugError } = useLojaBySlug(slug);
+  
+  // Se não encontrou por slug, pode ser um ID antigo (UUID)
+  // Nesse caso, usamos o próprio slug como ID
+  const lojaId = lojaData?.id || (slug && slug.includes('-') ? slug : undefined);
   
   const { data: products, isLoading: loadingProducts } = useProductsByLojaId(lojaId);
   const { data: categories, isLoading: loadingCategories } = useCategoriesByLojaId(lojaId);
@@ -43,12 +46,29 @@ const LojaCardapio = () => {
     products: (products || []).filter((p) => p.categoria_id === cat.id),
   }));
 
-  if (!slug || !lojaData) {
+  if (!slug) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="font-heading text-sm uppercase text-muted-foreground">
-          {lojaData === null ? "LOJA NÃO ENCONTRADA" : "CARREGANDO..."}
-        </p>
+        <p className="font-heading text-sm uppercase text-muted-foreground">LOJA NÃO ENCONTRADA</p>
+      </div>
+    );
+  }
+
+  // Se não encontrou por slug e não é UUID, mostra erro
+  const lojaNaoEncontrada = !lojaId || (!lojaData && !slug.includes('-'));
+
+  if (loadingProducts || loadingCategories || (lojaId && !settings && !lojaNaoEncontrada)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="font-heading text-sm uppercase text-muted-foreground">CARREGANDO...</p>
+      </div>
+    );
+  }
+
+  if (lojaNaoEncontrada) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="font-heading text-sm uppercase text-muted-foreground">LOJA NÃO ENCONTRADA</p>
       </div>
     );
   }
