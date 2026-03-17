@@ -1,13 +1,15 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
+const SCHEMA = import.meta.env.VITE_SUPABASE_SCHEMA || 'sobralacai';
+
 // Categories
 export function useCategories() {
   return useQuery({
     queryKey: ["categorias"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("categorias")
+        .from(`${SCHEMA}.categorias`)
         .select("*")
         .order("nome");
       if (error) return [];
@@ -49,7 +51,7 @@ export function useProducts() {
     queryKey: ["produtos"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("produtos")
+        .from(`${SCHEMA}.produtos`)
         .select("*, categorias(nome)")
         .order("nome");
       if (error) return [];
@@ -137,7 +139,7 @@ export function useSettings() {
     queryKey: ["configuracoes"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("configuracoes")
+        .from(`${SCHEMA}.configuracoes`)
         .select("*")
         .limit(1)
         .single();
