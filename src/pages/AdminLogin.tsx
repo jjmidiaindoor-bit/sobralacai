@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { useSettings } from "@/hooks/use-supabase";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
-  const { signIn } = useAuth();
   const { data: settings } = useSettings();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,14 +15,39 @@ export default function AdminLogin() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await signIn(email, password);
-    if (error) {
-      toast.error("Email ou senha incorretos.");
-    } else {
-      navigate("/admin");
+    
+    try {
+      // Buscar loja pelo email e senha
+      const { data: loja, error } = await supabase
+        .from("lojas")
+        .select("*")
+        .eq("email_admin", email)
+        .eq("senha_admin", password)
+        .eq("ativa", true)
+        .single();
+
+      if (error || !loja) {
+        toast.error("Email ou senha incorretos.");
+        setLoading(false);
+        return;
+      }
+
+      // Armazenar dados da loja no localStorage
+      localStorage.setItem("admin_loja", JSON.stringify({
+        id: loja.id,
+        nome_loja: loja.nome_loja,
+        email_admin: loja.email_admin,
+        nome_admin: loja.nome_admin
+      }));
+
       toast.success("Login realizado!");
+      navigate("/admin");
+    } catch (err) {
+      console.error("Erro no login:", err);
+      toast.error("Erro ao fazer login. Tente novamente.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

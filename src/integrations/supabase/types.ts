@@ -62,6 +62,45 @@ export type Database = {
         }
         Relationships: []
       }
+      lojas: {
+        Row: {
+          id: string
+          nome_loja: string
+          nome_admin: string
+          email_admin: string
+          senha_admin: string
+          telefone_whatsapp: string | null
+          endereco: string | null
+          ativa: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          nome_loja: string
+          nome_admin: string
+          email_admin: string
+          senha_admin: string
+          telefone_whatsapp?: string | null
+          endereco?: string | null
+          ativa?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          nome_loja?: string
+          nome_admin?: string
+          email_admin?: string
+          senha_admin?: string
+          telefone_whatsapp?: string | null
+          endereco?: string | null
+          ativa?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pedidos: {
         Row: {
           created_at: string

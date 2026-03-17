@@ -1,9 +1,8 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
 import {
   LayoutDashboard, Package, Tag, ClipboardList, Settings, LogOut, Menu, X, Send,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSettings } from "@/hooks/use-supabase";
 
 const NAV_ITEMS = [
@@ -18,14 +17,31 @@ const NAV_ITEMS = [
 export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { signOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { data: settings } = useSettings();
+  const [loja, setLoja] = useState<{ id: string; nome_loja: string; email_admin: string; nome_admin: string } | null>(null);
+
+  useEffect(() => {
+    const lojaData = localStorage.getItem("admin_loja");
+    if (!lojaData) {
+      navigate("/admin/login");
+      return;
+    }
+    setLoja(JSON.parse(lojaData));
+  }, [navigate]);
 
   const handleLogout = async () => {
-    await signOut();
+    localStorage.removeItem("admin_loja");
     navigate("/admin/login");
   };
+
+  if (!loja) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="font-heading text-sm uppercase text-muted-foreground">CARREGANDO...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex bg-background">

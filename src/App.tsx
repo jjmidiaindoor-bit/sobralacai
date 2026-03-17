@@ -21,7 +21,7 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
+function ProtectedSuperAdminRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) {
     return (
@@ -30,7 +30,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
       </div>
     );
   }
-  if (!user) return <Navigate to="/admin/login" replace />;
+  if (!user) return <Navigate to="/super-admin/login" replace />;
   return <>{children}</>;
 }
 
@@ -47,11 +47,7 @@ const App = () => (
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route
                 path="/admin"
-                element={
-                  <ProtectedRoute>
-                    <AdminLayout />
-                  </ProtectedRoute>
-                }
+                element={<AdminLayout />}
               >
                 <Route index element={<AdminDashboard />} />
                 <Route path="produtos" element={<AdminProducts />} />
@@ -64,9 +60,9 @@ const App = () => (
               <Route
                 path="/super-admin"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedSuperAdminRoute>
                     <SuperAdminLayout />
-                  </ProtectedRoute>
+                  </ProtectedSuperAdminRoute>
                 }
               >
                 <Route index element={<Navigate to="/super-admin/lojas" replace />} />
