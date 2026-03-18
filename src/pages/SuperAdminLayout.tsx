@@ -1,19 +1,26 @@
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
 import { LogOut, Store } from "lucide-react";
+import { useEffect } from "react";
 
 export default function SuperAdminLayout() {
-  const { signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleSignOut = async () => {
-    await signOut();
+    localStorage.removeItem("super_admin");
     navigate("/super-admin/login");
   };
 
   const isActive = (path: string) => location.pathname === path;
+
+  // Verificar se está autenticado
+  useEffect(() => {
+    const superAdmin = localStorage.getItem("super_admin");
+    if (!superAdmin) {
+      navigate("/super-admin/login");
+    }
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-background">

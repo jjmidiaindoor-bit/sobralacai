@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/contexts/CartContext";
-import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Checkout from "./pages/Checkout";
 import AdminLogin from "./pages/AdminLogin";
@@ -21,19 +21,6 @@ import LojaCardapio from "./pages/LojaCardapio";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
-
-function ProtectedSuperAdminRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="font-heading text-sm uppercase text-muted-foreground">CARREGANDO...</p>
-      </div>
-    );
-  }
-  if (!user) return <Navigate to="/super-admin/login" replace />;
-  return <>{children}</>;
-}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -59,14 +46,7 @@ const App = () => (
                 <Route path="configuracoes" element={<AdminSettings />} />
               </Route>
               <Route path="/super-admin/login" element={<SuperAdminLogin />} />
-              <Route
-                path="/super-admin"
-                element={
-                  <ProtectedSuperAdminRoute>
-                    <SuperAdminLayout />
-                  </ProtectedSuperAdminRoute>
-                }
-              >
+              <Route path="/super-admin" element={<SuperAdminLayout />}>
                 <Route index element={<Navigate to="/super-admin/lojas" replace />} />
                 <Route path="lojas" element={<SuperAdminLojas />} />
               </Route>
